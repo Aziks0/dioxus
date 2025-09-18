@@ -18,6 +18,7 @@ pub use crate::mobile_shortcut::*;
 use crate::window;
 use dioxus_html::input_data::keyboard_types::Modifiers;
 use slab::Slab;
+use std::fmt::Display;
 use std::{cell::RefCell, collections::HashMap, rc::Rc, str::FromStr};
 use tao::keyboard::ModifiersState;
 
@@ -44,6 +45,19 @@ pub enum ShortcutRegistryError {
     /// An unknown error occurred.
     Other(Rc<dyn std::error::Error>),
 }
+
+impl Display for ShortcutRegistryError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ShortcutRegistryError::InvalidShortcut(_) => {
+                unreachable!("https://github.com/tauri-apps/global-hotkey/issues/163")
+            }
+            ShortcutRegistryError::Other(error) => f.write_str(&error.to_string()),
+        }
+    }
+}
+
+impl std::error::Error for ShortcutRegistryError {}
 
 pub(crate) struct ShortcutRegistry {
     manager: GlobalHotKeyManager,
@@ -90,6 +104,10 @@ impl ShortcutRegistry {
         };
 
         self.manager.register(hotkey).map_err(|e| match e {
+            // `HotKeyParseError` is never used, but w/e, keep it so we get a failed compilation
+            // when it gets fixed. The implementation of `Display` for `ShortcutRegistryError`
+            // should be changed when it happens.
+            // https://github.com/tauri-apps/global-hotkey/issues/163
             HotkeyError::HotKeyParseError(shortcut) => {
                 ShortcutRegistryError::InvalidShortcut(shortcut)
             }
