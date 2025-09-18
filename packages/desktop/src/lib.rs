@@ -54,5 +54,5 @@ pub use desktop_context::{
 };
 pub use event_handlers::WryEventHandler;
 pub use hooks::*;
-pub use shortcut::{HotKeyState, ShortcutHandle, ShortcutRegistryError};
+pub use shortcut::{Code, HotKey, HotKeyState, ShortcutHandle, ShortcutRegistryError};
 pub use wry::RequestAsyncResponder;
