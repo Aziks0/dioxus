@@ -154,21 +154,7 @@ impl App {
 
     #[cfg(any(target_os = "windows", target_os = "linux", target_os = "macos"))]
     pub fn handle_tray_icon_event(&mut self, event: tray_icon::TrayIconEvent) {
-        if let tray_icon::TrayIconEvent::Click {
-            id: _,
-            position: _,
-            rect: _,
-            button,
-            button_state: _,
-        } = event
-        {
-            if button == tray_icon::MouseButton::Left {
-                for webview in self.webviews.values() {
-                    webview.desktop_context.window.set_visible(true);
-                    webview.desktop_context.window.set_focus();
-                }
-            }
-        }
+        _ = event;
     }
 
     #[cfg(all(feature = "devtools", debug_assertions))]
